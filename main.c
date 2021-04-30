@@ -1,25 +1,21 @@
 #include "attaque.c"
 #include <time.h>
+//(m1,c1) = (0xe66593, 0xc921bc) (m2,c2) = (0x2fe7c2,0xde877e)
+//(m1,c1) = (0xa7cbf0, 0x6e0763) (m2,c2) = (0x8b1e1c,0xe2b54a)
 
-int main(int argc, char const *argv[])
+int main()
 {
-	float time = clock();
-	if(argc !=3)
-	{
-		printf("Erreur: nombre d'argument invalide\n");
-		printf("Usage: ./main.o *message* *clef*\n");
-		return 1;
-	}
-	
-	uint128_t yes;
-	uint64_t clef_maitre = strtol(argv[2],NULL,16);
-	uint32_t message = strtol(argv[1],NULL,16);
-	uint32_t cryptee = cryptage(message ,clef_maitre);
-	printf("message clair: %x; clef maitre: %x; message crypte: %x\n",message, clef_maitre, cryptee);
-	
-	message = decryptage(cryptee, clef_maitre);
-	printf("message crypte: %x; clef maitre: %x; message clair: %x\n",cryptee, clef_maitre, message);
+	solution s;
+	s = attaque(0xa7cbf0, 0x6e0763, 0x8b1e1c, 0xe2b54a);
+
 	float time2 = clock();
-	printf("\n temps d'éxécution: %f\n",(time2 - time)/CLOCKS_PER_SEC);
+	printf("Nombre de solution: %d\n",s.nombre);
+	
+	for(int i=0;i<s.nombre;i++)
+	{
+		printf("Couple de clef %d: %x,%x\n",i,s.clef[i].K1,s.clef[i].K2);
+	}
+
+	free(s.clef);
 	return 0;
 }

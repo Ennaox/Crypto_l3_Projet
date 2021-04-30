@@ -1,12 +1,15 @@
 run: compil
+	./main.o
 
-test: compil
-	./main.o 000000 000000
+perf: compil
+	gprof main.o
 
-test2:
-	./main.o 000000 000000
+memcheck: compil
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes ./main.o
 
+debug: compil
+	gdb ./main.o
 compil: clean
-	gcc main.c -o main.o
+	gcc main.c -o main.o -O3 -lpthread -g -pg
 clean:
 	rm *.o -f
