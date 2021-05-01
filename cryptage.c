@@ -1,15 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <inttypes.h>
-
-typedef struct bit_80_struct
-{
-	uint64_t g;	//16 dernier bit
-	uint64_t d;	//64 premier bit
-	
-} uint128_t;
+#include "cryptage.h"
 
 uint32_t substitution(uint32_t hex, int nb_octal)
 {
@@ -24,24 +13,6 @@ uint32_t substitution(uint32_t hex, int nb_octal)
 		mask = mask << 4;
 	}
 	return new_hex;
-}
-
-char * convert(uint32_t hex)
-{
-	char * string = malloc(25*sizeof(char));
-	memset(string,0,25*sizeof(char));
-	uint32_t mask = 0x800000;
-	uint32_t tmp;
-	for(int i = 0; i<24;i++)
-	{
-		tmp = hex&mask;
-		if(tmp)
-			string[i]='1';
-		else
-			string[i]='0';
-		mask=mask>>1;
-	}
-	return string;
 }
 
 uint32_t permutation(uint32_t orig)
@@ -80,6 +51,7 @@ uint32_t* cadencement_clef(uint64_t clef_maitre)
 	for(int i=1;i<12;i++)
 	{
 		//Récupération de la sous clef
+		
 		K[i]=(uint32_t)((clef.d&0xffffff0000)>>16);
 		
 		//Décallage de la clef----------------------------

@@ -1,4 +1,4 @@
-#include "cryptage.c"
+#include "decryptage.h"
 
 uint32_t substitution_inverse(uint32_t hex, int nb_octal)
 {

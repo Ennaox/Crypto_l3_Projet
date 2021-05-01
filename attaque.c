@@ -1,90 +1,54 @@
-#include "decryptage.c"
-#include <pthread.h>
+#include "attaque.h"
 
-typedef struct clef_T{
-	uint32_t K1;
-	uint32_t K2;
-} t_clef;
-
-typedef struct s{
-	t_clef *clef;
-	uint32_t nombre;
-} solution;
-
-typedef struct message_clef
-{
-	uint32_t clef;
-	uint32_t message;
-} message_clef;
-
-typedef struct donnee_{
-	
-	pthread_mutex_t mutex_dicho;
-
-	uint32_t *M1;
-	uint32_t *C1;
-
-	uint32_t *M2;
-	uint32_t *C2;
-
-	message_clef* K1;
-	message_clef* K2;
-
-	solution *s_coll;
-	
-	solution *s_dicho;
-
-	solution *s_test1;
-	solution *s_test2;
-	solution *s_test3;
-	solution *s_test4;
-} donnee;
-
-void *cryptage_1(void * arg_v)
+void *contruc_L_1(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	for(uint64_t i=0 ; i<(16777216/2); i++)
+	for(uint64_t i=0 ; i<(16777216/4); i++)
 	{
 		arg->K1[i].message = cryptage(*arg->M1, i);
 		arg->K1[i].clef = i;
+		arg->K2[i].message = decryptage(*arg->C1, i);
+		arg->K2[i].clef = i;
 	}
-	printf("Thread 1 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
-void *cryptage_2(void * arg_v)
+void *contruc_L_2(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	for(uint64_t i=16777216/2; i<(16777216); i++)
+	for(uint64_t i=16777216/4; i<16777216/2; i++)
 	{
 		arg->K1[i].message = cryptage(*arg->M1, i);
 		arg->K1[i].clef = i;
-	}
-	printf("Thread 2 fini\n");
-	pthread_exit(EXIT_SUCCESS);
-}
-
-void *decryptage_1(void * arg_v)
-{
-	donnee *arg = (donnee*)arg_v;
-	for(uint64_t i=0 ; i<(16777216/2); i++)
-	{
 		arg->K2[i].message = decryptage(*arg->C1, i);
 		arg->K2[i].clef = i;
 	}
-	printf("Thread 3 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
-void *decryptage_2(void * arg_v)
+void *contruc_L_3(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	for(uint64_t i=16777216/2; i<(16777216); i++)
+	for(uint64_t i=16777216/2 ; i<3*16777216/4; i++)
 	{
+		arg->K1[i].message = cryptage(*arg->M1, i);
+		arg->K1[i].clef = i;
 		arg->K2[i].message = decryptage(*arg->C1, i);
 		arg->K2[i].clef = i;
 	}
-	printf("Thread 4 fini\n");
+	pthread_exit(EXIT_SUCCESS);
+}
+
+void *contruc_L_4(void * arg_v)
+{
+	donnee *arg = (donnee*)arg_v;
+	for(uint64_t i=3*16777216/4; i<16777216; i++)
+	{
+		arg->K1[i].message = cryptage(*arg->M1, i);
+		arg->K1[i].clef = i;
+		arg->K2[i].message = decryptage(*arg->C1, i);
+		arg->K2[i].clef = i;
+	}
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -129,7 +93,6 @@ void* dicho_1(void *arg_v)
 			}
 		}
 	}
-	printf("Thread 1 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -174,7 +137,6 @@ void* dicho_2(void *arg_v)
 			}
 		}
 	}
-	printf("Thread 2 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -200,7 +162,6 @@ void* test_1(void * arg_v)
 			arg->s_test1->clef[arg->s_test1->nombre-1].K2 = arg->s_coll->clef[i].K2;
 		}
 	}
-	printf("Thread 1 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -224,7 +185,6 @@ void* test_2(void * arg_v)
 			arg->s_test2->clef[arg->s_test2->nombre-1].K2 = arg->s_coll->clef[i].K2;
 		}
 	}
-	printf("Thread 2 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -248,7 +208,6 @@ void* test_3(void * arg_v)
 			arg->s_test3->clef[arg->s_test3->nombre-1].K2 = arg->s_coll->clef[i].K2;
 		}
 	}
-	printf("Thread 3 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -272,7 +231,6 @@ void* test_4(void * arg_v)
 			arg->s_test4->clef[arg->s_test4->nombre-1].K2 = arg->s_coll->clef[i].K2;
 		}
 	}
-	printf("Thread 4 fini\n");
 	pthread_exit(EXIT_SUCCESS);
 }
 
@@ -367,13 +325,11 @@ solution fusion(donnee arg)
 solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 {
 	//Calcul des clefs
-	time_t deb,fin;
-	deb=time(NULL);
 	donnee arg = init_arg(&m1, &c1, &m2, &c2);
-	pthread_t cryptage1;
-	pthread_t cryptage2;
-	pthread_t decryptage1;
-	pthread_t decryptage2;
+	pthread_t contrucL1;
+	pthread_t contrucL2;
+	pthread_t contrucL3;
+	pthread_t contrucL4;
 
 	pthread_t dichotomie1;
 	pthread_t dichotomie2;
@@ -384,33 +340,24 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_t test4;
 	
 	int verif;
-	verif = pthread_create(&cryptage1, NULL, cryptage_1, &arg);
-	verif += pthread_create(&cryptage2, NULL, cryptage_2, &arg);
-	verif += pthread_create(&decryptage1, NULL, decryptage_1, &arg);
-	verif += pthread_create(&decryptage2, NULL, decryptage_2, &arg);
+	verif = pthread_create(&contrucL1, NULL, contruc_L_1, &arg);
+	verif += pthread_create(&contrucL2, NULL, contruc_L_2, &arg);
+	verif += pthread_create(&contrucL3, NULL, contruc_L_3, &arg);
+	verif += pthread_create(&contrucL4, NULL, contruc_L_4, &arg);
 	if(verif !=0)
 	{
 		printf("Erreur Fatale: Un thread n'a pas pu être créer\n");
 		exit(1);
 	}
 	verif = 0;
-	pthread_join(cryptage1,NULL);
-	pthread_join(cryptage2,NULL);
-	pthread_join(decryptage1,NULL);
-	pthread_join(decryptage2,NULL);
-	printf("\n");
-	fin = time(NULL);
-	printf("Durée du calcul des clef: %d sec\n\n",fin-deb);
-	
+	pthread_join(contrucL1,NULL);
+	pthread_join(contrucL2,NULL);
+	pthread_join(contrucL3,NULL);
+	pthread_join(contrucL4,NULL);
+	printf("Fin de la construction des listes Lm Lc...\n");
 	//Test des clefs
-	deb = time(NULL);
-	printf("deb qsort\n");
 	qsort(arg.K2,16777216,sizeof(message_clef),cmp);
-	printf("fin qsort\n");
-	fin = time(NULL);
-	printf("Durée du qsort: %d sec\n\n",fin-deb );
 
-	deb = time(NULL);
 	verif = pthread_create(&dichotomie1, NULL, dicho_1, &arg);
 	verif += pthread_create(&dichotomie2, NULL, dicho_2, &arg);
 	if(verif !=0)
@@ -421,12 +368,7 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 
 	pthread_join(dichotomie1,NULL);
 	pthread_join(dichotomie2,NULL);
-	
-	printf("\nDichotomie terminée\n");
-	fin = time(NULL);
-	printf("Duréedichotomie %d sec\n\n",fin-deb );
-	
-	deb = time(NULL);
+	printf("Fin de la recherche des éléments commun de Lm et Lc...\n");
 	verif = pthread_create(&test1, NULL, test_1, &arg);
 	verif += pthread_create(&test2, NULL, test_2, &arg);
 	verif += pthread_create(&test3, NULL, test_3, &arg);
@@ -443,9 +385,7 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(test4,NULL);
 	solution ap_test;
 	ap_test = fusion(arg);
-	fin = time(NULL);
-	printf("Durée des tesrs de validité: %d sec\n\n",fin-deb);
-
+	printf("Fin des test des clef\n");
 	freemem(arg);
 	return ap_test;
 }

@@ -1,15 +1,14 @@
-run: compil
+run: main.o
 	./main.o
 
-perf: compil
-	gprof main.o
+compil: 
+	gcc cryptage.c decryptage.c attaque.c main.c -o main.o -O3 -lpthread -g
 
-memcheck: compil
-	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --error-limit=no ./main.o
-
-debug: compil
+debug: main.o
 	gdb ./main.o
-compil: clean
-	gcc main.c -o main.o -O3 -lpthread -g -pg
+
+main.o:
+	gcc cryptage.c decryptage.c attaque.c main.c -o main.o -O3 -lpthread -g
+
 clean:
 	rm *.o -f

@@ -1,0 +1,108 @@
+DM: Implantation de l’attaque par le milieu contre un chiffrement par bloc.
+Groupe : DIAS Nicolas, LAPLANCHE Alexis.
+
+Couple clair-chiffrés utilisé: LAPLANCHE Alexis
+
+#Fonction de déchiffrement:
+
+Algorithme: Fonction de déchiffrement:
+Entrée: Un message crypté c de 24 bits et 11 sous-clefs Ki, 1 ≤ i ≤ 11, produites par l’algorithme decadencement de clef
+Sortie: Un message déchiffré m de 24 bits
+
+Etat <- c
+Etat <- Etat xor K[11]
+Pour i allant de 10 à 1:
+	Etat <- Permutation_inverse(Etat)
+	Etat <- Subtitution_inverse(Etat)
+	Etat <- Etat xor K[i]
+fin pour
+m <- Etat
+
+
+Boite subtitution inverse ~S:
+x 		0 1 2 3 4 5 6 7 8 9 a b c d e f
+~S[x]	5 e f 8 c 1 2 d b 4 6 3 0 7 9 a 
+
+Tableau permutation inverse ~P:
+i 		0 1 2  3  4 5  6 7 8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+~P[i]	0 4 8 12 16 20 1 5 9 13 17 21  2  6 10 14 18 22  3 7  11 15 19 23
+
+
+
+#Attaque par le millieu:
+
+Algorithme: Dichotomie
+Entrée: Deux listes Lm[],Lc[]
+Sortie: Listes Candidats[] contenant des couples clef candidates
+
+debut <- 0
+fin <- 2^24 - 1
+millieu <- fin/2
+pour i allant de 0 à 2^24:
+	
+	Tant que cdt != 1
+		
+		Si Lm[i] = lc[i]:
+
+			Candidats[]+ <- (i,millieu)
+			cdt = 1
+		
+		Sinon: 
+			Si Lm[i] < Lc[0] OU Lm[i]>Lc[fin]:
+
+				cdt = 1
+			
+			Sinon:
+				Si Lm[i] < Lc[millieu]:
+
+					fin = millieu -1
+					millieu = (deb+fin)/2
+
+				Sinon:
+					Si Lm[i] > Lc[millieu]:
+						
+						deb = millieu + 1
+						millieu = (deb+fin)/2
+					
+					Fin si
+				Fin sinon:
+			Fin sinon:
+		Fin sinon
+	fin tant que
+
+fin pour
+Fin Algo
+
+Algorithme: test_clef
+Entrée: Liste de couple de clef Candidats[] de taille t et de première case 0
+Sortie: Liste (k1,k2)[] de couple de clef
+
+Pour i allant de 0 à t*
+	m <- cryptage(Candidats[i])
+	c <- decryptage(Candidats[i])
+	
+	Si m = c:
+		(k1,k2)[]+ <- i
+	Fin si
+fin pour
+
+Fin algo
+
+
+
+
+
+Algorithme: Fonction attaque:
+Entrée: Deux couples messages clair-chiffré (m1,c1), (m2,c2)
+Sortie: Couple clef chiffrement (k1,k2)
+
+pour i allant de 0 à 2^24:
+	K[] <- cadencement_clef(i)
+	Lm[]+ <- cryptage(m1,K[])
+	Lc[]+ <- decryptage(c1,K[])
+fin pour
+Lc[] <- Quick_sort(Lc)
+Candidats[]+ <- Dichotomie(Lm[],Lc[])	//Fonction de recherche d'élément commun
+(k1,k2)[]+ <- test_clef(Candidats[])
+
+Fin algo
