@@ -305,6 +305,8 @@ void freemem(donnee arg)
 {
 	pthread_mutex_destroy(&arg.mutex_dicho);
 
+	
+
 	free(arg.K1);
 	free(arg.K2);
 
@@ -365,6 +367,8 @@ solution fusion(donnee arg)
 solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 {
 	//Calcul des clefs
+	time_t deb,fin;
+	deb=time(NULL);
 	donnee arg = init_arg(&m1, &c1, &m2, &c2);
 	pthread_t cryptage1;
 	pthread_t cryptage2;
@@ -395,12 +399,18 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(decryptage1,NULL);
 	pthread_join(decryptage2,NULL);
 	printf("\n");
+	fin = time(NULL);
+	printf("Durée du calcul des clef: %d sec\n\n",fin-deb);
+	
 	//Test des clefs
-
+	deb = time(NULL);
 	printf("deb qsort\n");
 	qsort(arg.K2,16777216,sizeof(message_clef),cmp);
 	printf("fin qsort\n");
+	fin = time(NULL);
+	printf("Durée du qsort: %d sec\n\n",fin-deb );
 
+	deb = time(NULL);
 	verif = pthread_create(&dichotomie1, NULL, dicho_1, &arg);
 	verif += pthread_create(&dichotomie2, NULL, dicho_2, &arg);
 	if(verif !=0)
@@ -413,7 +423,10 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(dichotomie2,NULL);
 	
 	printf("\nDichotomie terminée\n");
+	fin = time(NULL);
+	printf("Duréedichotomie %d sec\n\n",fin-deb );
 	
+	deb = time(NULL);
 	verif = pthread_create(&test1, NULL, test_1, &arg);
 	verif += pthread_create(&test2, NULL, test_2, &arg);
 	verif += pthread_create(&test3, NULL, test_3, &arg);
@@ -428,9 +441,11 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(test2,NULL);
 	pthread_join(test3,NULL);
 	pthread_join(test4,NULL);
-
 	solution ap_test;
 	ap_test = fusion(arg);
+	fin = time(NULL);
+	printf("Durée des tesrs de validité: %d sec\n\n",fin-deb);
+
 	freemem(arg);
 	return ap_test;
 }
