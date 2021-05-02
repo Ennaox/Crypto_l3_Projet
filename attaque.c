@@ -145,10 +145,8 @@ void* dicho_2(void *arg_v)
 void* test_1(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	arg->s_test1->clef = malloc(1*sizeof(t_clef));
 	uint32_t crypt;
 	uint32_t decrypt;
-	arg->s_test1->nombre = 0;
 	for(int i=0;i<(arg->s_coll->nombre/4);i++)
 	{
 		crypt = cryptage(*arg->M2,arg->s_coll->clef[i].K1);
@@ -156,10 +154,12 @@ void* test_1(void * arg_v)
 
 		if(crypt == decrypt)
 		{
-			arg->s_test1->nombre ++;
-			arg->s_test1->clef = reallocarray(arg->s_test1->clef, arg->s_test1->nombre, sizeof(t_clef));
-			arg->s_test1->clef[arg->s_test1->nombre-1].K1 = arg->s_coll->clef[i].K1;
-			arg->s_test1->clef[arg->s_test1->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_lock(&arg->mutex_dicho);
+			arg->s_test->nombre ++;
+			arg->s_test->clef = reallocarray(arg->s_test->clef, arg->s_test->nombre, sizeof(t_clef));
+			arg->s_test->clef[arg->s_test->nombre-1].K1 = arg->s_coll->clef[i].K1;
+			arg->s_test->clef[arg->s_test->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_unlock(&arg->mutex_dicho);
 		}
 	}
 	pthread_exit(EXIT_SUCCESS);
@@ -168,10 +168,8 @@ void* test_1(void * arg_v)
 void* test_2(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	arg->s_test2->clef = malloc(1*sizeof(t_clef));
 	uint32_t crypt;
 	uint32_t decrypt;
-	arg->s_test2->nombre = 0;
 	for(int i=arg->s_coll->nombre/4;i<(arg->s_coll->nombre/2);i++)
 	{
 		crypt = cryptage(*arg->M2,arg->s_coll->clef[i].K1);
@@ -179,10 +177,12 @@ void* test_2(void * arg_v)
 
 		if(crypt == decrypt)
 		{
-			arg->s_test2->nombre ++;
-			arg->s_test2->clef = reallocarray(arg->s_test2->clef,arg->s_test2->nombre,sizeof(t_clef));
-			arg->s_test2->clef[arg->s_test2->nombre-1].K1 = arg->s_coll->clef[i].K1;
-			arg->s_test2->clef[arg->s_test2->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_lock(&arg->mutex_dicho);
+			arg->s_test->nombre ++;
+			arg->s_test->clef = reallocarray(arg->s_test->clef,arg->s_test->nombre,sizeof(t_clef));
+			arg->s_test->clef[arg->s_test->nombre-1].K1 = arg->s_coll->clef[i].K1;
+			arg->s_test->clef[arg->s_test->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_unlock(&arg->mutex_dicho);
 		}
 	}
 	pthread_exit(EXIT_SUCCESS);
@@ -191,10 +191,8 @@ void* test_2(void * arg_v)
 void* test_3(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	arg->s_test3->clef = malloc(1*sizeof(t_clef));
 	uint32_t crypt;
 	uint32_t decrypt;
-	arg->s_test3->nombre = 0;
 	for(int i=arg->s_coll->nombre/2;i<((3*arg->s_coll->nombre)/4);i++)
 	{
 		crypt = cryptage(*arg->M2,arg->s_coll->clef[i].K1);
@@ -202,10 +200,12 @@ void* test_3(void * arg_v)
 
 		if(crypt == decrypt)
 		{
-			arg->s_test3->nombre ++;
-			arg->s_test3->clef = reallocarray(arg->s_test3->clef,arg->s_test3->nombre,sizeof(t_clef));
-			arg->s_test3->clef[arg->s_test3->nombre-1].K1 = arg->s_coll->clef[i].K1;
-			arg->s_test3->clef[arg->s_test3->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_lock(&arg->mutex_dicho);
+			arg->s_test->nombre ++;
+			arg->s_test->clef = reallocarray(arg->s_test->clef,arg->s_test->nombre,sizeof(t_clef));
+			arg->s_test->clef[arg->s_test->nombre-1].K1 = arg->s_coll->clef[i].K1;
+			arg->s_test->clef[arg->s_test->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_unlock(&arg->mutex_dicho);
 		}
 	}
 	pthread_exit(EXIT_SUCCESS);
@@ -214,10 +214,8 @@ void* test_3(void * arg_v)
 void* test_4(void * arg_v)
 {
 	donnee *arg = (donnee*)arg_v;
-	arg->s_test4->clef = malloc(1*sizeof(t_clef));
 	uint32_t crypt;
 	uint32_t decrypt;
-	arg->s_test4->nombre = 0;
 	for(int i=(3*arg->s_coll->nombre)/4;i<arg->s_coll->nombre;i++)
 	{
 		crypt = cryptage(*arg->M2,arg->s_coll->clef[i].K1);
@@ -225,10 +223,12 @@ void* test_4(void * arg_v)
 
 		if(crypt == decrypt)
 		{
-			arg->s_test4->nombre ++;
-			arg->s_test4->clef = reallocarray(arg->s_test4->clef,arg->s_test4->nombre,sizeof(t_clef));
-			arg->s_test4->clef[arg->s_test4->nombre-1].K1 = arg->s_coll->clef[i].K1;
-			arg->s_test4->clef[arg->s_test4->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_lock(&arg->mutex_dicho);
+			arg->s_test->nombre ++;
+			arg->s_test->clef = reallocarray(arg->s_test->clef,arg->s_test->nombre,sizeof(t_clef));
+			arg->s_test->clef[arg->s_test->nombre-1].K1 = arg->s_coll->clef[i].K1;
+			arg->s_test->clef[arg->s_test->nombre-1].K2 = arg->s_coll->clef[i].K2;
+			pthread_mutex_unlock(&arg->mutex_dicho);
 		}
 	}
 	pthread_exit(EXIT_SUCCESS);
@@ -248,13 +248,13 @@ donnee init_arg(uint32_t *m1, uint32_t *c1, uint32_t *m2, uint32_t *c2)
 	arg.K1 = malloc(16777216*sizeof(message_clef));
 	arg.K2 = malloc(16777216*sizeof(message_clef));
 
-	arg.s_test1 = malloc(sizeof(solution));
-	arg.s_test2 = malloc(sizeof(solution));
-	arg.s_test3 = malloc(sizeof(solution));
-	arg.s_test4 = malloc(sizeof(solution));
+	arg.s_test = malloc(sizeof(solution));
+
 	arg.s_coll = malloc(sizeof(solution));
 	arg.s_coll->clef = malloc(1*sizeof(t_clef));
 	arg.s_coll->nombre = 0;
+	arg.s_test->clef = malloc(1*sizeof(t_clef));
+	arg.s_test->nombre = 0;
 	
 	return arg;
 }
@@ -263,22 +263,14 @@ void freemem(donnee arg)
 {
 	pthread_mutex_destroy(&arg.mutex_dicho);
 
-	
-
 	free(arg.K1);
 	free(arg.K2);
 
-	free(arg.s_test1->clef);
-	free(arg.s_test2->clef);
-	free(arg.s_test3->clef);
-	free(arg.s_test4->clef);
-
-	free(arg.s_test1);
-	free(arg.s_test2);
-	free(arg.s_test3);
-	free(arg.s_test4);
+	free(arg.s_test->clef);
+	free(arg.s_test);
 
 	free(arg.s_coll->clef);
+	free(arg.s_coll);
 }
 
 int cmp(const void * a, const void * b)
@@ -288,43 +280,23 @@ int cmp(const void * a, const void * b)
 	return ( a_mc->message - b_mc->message );
 }
 
-solution fusion(donnee arg)
+solution copy(solution orig)
 {
-	solution ap_test;
-	int sum = arg.s_test1->nombre + arg.s_test2->nombre + arg.s_test3->nombre + arg.s_test4->nombre;
-	ap_test.clef = malloc(sum*sizeof(t_clef));
-	ap_test.nombre = sum;
-	int y = 0;
-	for(int i = 0;i<arg.s_test1->nombre;i++,y++)
+	solution s;
+	s.nombre = orig.nombre;
+	s.clef = malloc(s.nombre*sizeof(t_clef));
+	for(int i=0; i<s.nombre;i++)
 	{
-		ap_test.clef[y].K1 = arg.s_test1->clef[i].K1;
-		ap_test.clef[y].K2 = arg.s_test1->clef[i].K2;
+		s.clef[i].K1 = orig.clef[i].K1;
+		s.clef[i].K2 = orig.clef[i].K2;
 	}
-
-	for(int i = 0;i<arg.s_test2->nombre;i++,y++)
-	{
-		ap_test.clef[y].K1 = arg.s_test2->clef[i].K1;
-		ap_test.clef[y].K2 = arg.s_test2->clef[i].K2;
-	}
-
-	for(int i = 0;i<arg.s_test3->nombre;i++,y++)
-	{
-		ap_test.clef[y].K1 = arg.s_test3->clef[i].K1;
-		ap_test.clef[y].K2 = arg.s_test3->clef[i].K2;
-	}
-
-	for(int i = 0;i<arg.s_test4->nombre;i++,y++)
-	{
-		ap_test.clef[y].K1 = arg.s_test4->clef[i].K1;
-		ap_test.clef[y].K2 = arg.s_test4->clef[i].K2;
-	}
-
-	return ap_test;
+	return s;
 }
 
 solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 {
-	//Calcul des clefs
+	//#Calcul des clefs
+	
 	donnee arg = init_arg(&m1, &c1, &m2, &c2);
 	pthread_t contrucL1;
 	pthread_t contrucL2;
@@ -354,9 +326,14 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(contrucL2,NULL);
 	pthread_join(contrucL3,NULL);
 	pthread_join(contrucL4,NULL);
-	printf("Fin de la construction des listes Lm Lc...\n");
-	//Test des clefs
-	qsort(arg.K2,16777216,sizeof(message_clef),cmp);
+	printf("Fin de la construction des listes Lm et Lc...\n");
+	
+	//#Test des clefs
+	//##Trie la listes des mots décrypter.
+	
+	qsort(arg.K2,16777216,sizeof(message_clef),cmp);	
+
+	//##Recherche des éléments commun
 
 	verif = pthread_create(&dichotomie1, NULL, dicho_1, &arg);
 	verif += pthread_create(&dichotomie2, NULL, dicho_2, &arg);
@@ -368,7 +345,11 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 
 	pthread_join(dichotomie1,NULL);
 	pthread_join(dichotomie2,NULL);
+	
 	printf("Fin de la recherche des éléments commun de Lm et Lc...\n");
+	
+	//##Test des clefs pour trouver le couples de clef cherchés
+
 	verif = pthread_create(&test1, NULL, test_1, &arg);
 	verif += pthread_create(&test2, NULL, test_2, &arg);
 	verif += pthread_create(&test3, NULL, test_3, &arg);
@@ -383,9 +364,10 @@ solution attaque(uint32_t m1, uint32_t c1, uint32_t m2, uint32_t c2)
 	pthread_join(test2,NULL);
 	pthread_join(test3,NULL);
 	pthread_join(test4,NULL);
-	solution ap_test;
-	ap_test = fusion(arg);
 	printf("Fin des test des clef\n");
+	
+	solution s;
+	s = copy(*arg.s_test);
 	freemem(arg);
-	return ap_test;
+	return s;
 }

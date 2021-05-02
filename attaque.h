@@ -44,10 +44,7 @@ typedef struct donnee_{
 
 	solution *s_coll;	//Tableau des résultats des comparaison entre K1 et K2.
 
-	solution *s_test1;	//Tableau des résultats des tests des clef.
-	solution *s_test2;	//Tableau des résultats des tests des clef.
-	solution *s_test3;	//Tableau des résultats des tests des clef.
-	solution *s_test4;	//Tableau des résultats des tests des clef.
+	solution *s_test;	//Tableau des résultats des tests des clef.
 } donnee;
 
 //Les fonctions cryptage permettent de crypté le message M1 et de décrypter C1 avec tout les clef possible.
@@ -78,8 +75,7 @@ void* dicho_2(void *arg_v);
 //Entrée :
 // -arg_v : pointeur vers la struct donnee.
 //Sortie :
-// -Les fonctions suivantes complètent la structure de donnée en remplissant respectivement les tableaux s_test1, s_test2, s_test3
-//  et s_test4.
+// -Les fonctions suivantes complètent la structure de donnée en remplissant respectivement le tableau s_test.
 //
 //Les fonctions suivantes sont itilisés pour générer des threads.
 void* test_1(void * arg_v);
@@ -111,12 +107,12 @@ void freemem(donnee arg);
 // -Résultat de la soustraction: a_mc->message - b_mc->message
 int cmp(const void * a, const void * b);
 
-//Fonction fusion permet de fusionné les strucutes s_test1, s_test2, s_test3, s_test4 en une seul structure solution.
+//Fonction copy permet de copier la structue solution ainsi que le tableau qu'elle contient
 //Entrée :
-// -arg : strucutre donnee
+// -orig : strucutre solution
 //Sortie :
-// -Strucute solution résultant de la fusion des tableaux s_test
-solution fusion(donnee arg);
+// -Strucute solution résultant de la copy de orig
+solution copy(solution orig);
 
 //Fonction principale de l'attaque par le milieu. Elle permet de réaliser l'attaque et de renvoyer la/les solutions.
 //Entrée :

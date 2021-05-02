@@ -31,6 +31,14 @@ i 		0 1 2  3  4 5  6 7 8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
 
 #Attaque par le millieu:
 
+Notre algorithme d'attaque par le millieu fonctionne de la façon suivante: Dans un premier temps on crée deux liste contenant les résultats des cryptages et décryptages des mots m1, c1 avec toutes les clefs possible (clefs de 0 à 2^24). On trie ensuite la listes des résultats du décryptage du mot c1 dans l'ordre croissant (par exemple 01 avant 10). On utilise ensuite un algorithme divisé pour mieux régner (dichotomie), qui parcours toute la liste des mot crypté, pour chercher les éléments commun entre les deux listes. On range ensuite range dans une nouvelle liste de couple de clef, les couples de clefs ayant générer des mots intermédiaire 
+égaux. On parcours ensuite cette liste de couple de clef pour l'appliquer aux mots m2 et c2. On teste ensuite l'égalité des résultats du cryptages et décryptages avec ces clefs. S'il y a égalité, le couple de clef ayant permis de les générer est donc le couple (k1,k2) cherchés. 
+
+Notre algorithme a trouvé 10 602 622 éléments commum au deux listes.
+Notre algorithme a trouvé 2 couples de clef solution: (48dfe6,8482ad) et (b6aa01, 17097).
+
+##Présentation des algortihme utilisé pour l'attaque:
+
 Algorithme: Dichotomie
 Entrée: Deux listes Lm[],Lc[]
 Sortie: Listes Candidats[] contenant des couples clef candidates
