@@ -24,6 +24,6 @@ int main()
 
 	free(s.clef);
 	fin = time(NULL);
-	printf("Temps d'éxécution: %d sec\n",fin-deb );
+	printf("Temps d'éxécution: %ld sec\n",fin-deb );
 	return 0;
 }

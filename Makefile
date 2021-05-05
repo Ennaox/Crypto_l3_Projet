@@ -2,7 +2,7 @@ run: main.o
 	./main.o
 
 compil: 
-	gcc cryptage.c decryptage.c attaque.c main.c -o main.o -O3 -lpthread -g
+	gcc cryptage.c decryptage.c attaque.c main.c -o main.o -O3 -lpthread -g -Wall
 
 debug: main.o
 	gdb ./main.o

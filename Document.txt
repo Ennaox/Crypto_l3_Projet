@@ -1,7 +1,7 @@
 DM: Implantation de l’attaque par le milieu contre un chiffrement par bloc.
 Groupe : DIAS Nicolas, LAPLANCHE Alexis.
 
-Couple clair-chiffrés utilisé: LAPLANCHE Alexis
+Couple clair-chiffrés utilisé: LAPLANCHE Alexis (m1,c1) = (a7cbf0, 6e0763); (m2,c2) = (8b1e1c,e2b54a)
 
 #Fonction de déchiffrement:
 

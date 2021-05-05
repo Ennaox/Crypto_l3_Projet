@@ -20,18 +20,18 @@ int main(int argc, char const *argv[])
 		mot = cryptage(m1,s.clef[i].K1);
 		mot = cryptage(mot,s.clef[i].K2);
 		
-		printf("m1 crypté: %x au lieu de %x\n",mot,c1);
+		printf("m1 crypté: %x ;message attendu %x\n",mot,c1);
 		mot = decryptage(c1,s.clef[i].K2);
 		mot = decryptage(mot,s.clef[i].K1);
-		printf("c1 décrypté: %x au lieu de %x\n",mot,m1);
+		printf("c1 décrypté: %x ;message attendu %x\n",mot,m1);
 
 		mot = cryptage(m2,s.clef[i].K1);
 		mot = cryptage(mot,s.clef[i].K2);
 		
-		printf("m2 crypté: %x au lieu de %x\n",mot,c2);
+		printf("m2 crypté: %x ;message attendu %x\n",mot,c2);
 		mot = decryptage(c2,s.clef[i].K2);
 		mot = decryptage(mot,s.clef[i].K1);
-		printf("c2 décrypté: %x au lieu de %x\n\n",mot,m2);
+		printf("c2 décrypté: %x ;message attendu %x\n\n",mot,m2);
 	}
 
 	return 0;
